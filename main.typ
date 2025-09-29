@@ -1,5 +1,4 @@
 
-#let amount = 1375
 
 #let rates = (
   "USD": (value: 1.00, symbol: "$"),
@@ -12,20 +11,29 @@
   "CHF": (value: 0.8481, symbol: "₣"),
 )
 
-#let tab = table(
-  columns: rates.len(),
-  stroke: (thickness: 1pt, paint: white),
-  rows: 2,
-  gutter: 4pt,
-  ..rates.keys(),
-  ..rates.values().map(((value, symbol)) => str(calc.floor(value * amount)) + symbol)
-)
 
-#context {
-  let ments = measure(tab)
-  let mx = 100pt
-  let my = 20pt
-  set text(white, size: 15pt)
-  set page(width: ments.width + mx, height: ments.height + my, fill: black, margin: 0em)
-  place(center + horizon, tab)
+#let amounts = csv("amounts.csv")
+
+#for row in amounts.slice(1,) {
+  let amount = float(row.at(1))
+  let tab = table(
+    columns: rates.len(),
+    stroke: (thickness: 1pt, paint: white),
+    rows: 2,
+    gutter: 4pt,
+    ..rates.keys(),
+    ..rates.values().map(((value, symbol)) => str(calc.floor(value * amount)) + symbol)
+  )
+  context {
+    let ments = measure(tab)
+    let mx = 100pt
+    let my = 20pt
+    set text(white, size: 15pt)
+    set page(width: ments.width + mx, height: ments.height + my, fill: black, margin: 0em)
+    place(center + horizon, tab)
+  }
 }
+
+
+
+
